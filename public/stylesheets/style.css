@@ -1,0 +1,214 @@
+body {
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  height: 100vh;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box; }
+
+.home-main {
+  background-color: #2d91fb;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: auto;
+  display: flex;
+  align-items: center;
+  padding: 50px; }
+
+.home-main__left {
+  flex: 1; }
+  .home-main__left .home-main_title {
+    color: white;
+    font-size: 40px;
+    font-weight: bolder;
+    margin-bottom: 0; }
+  .home-main__left .home-main_des {
+    color: #d7e9ff;
+    font-size: 20px;
+    margin-top: 10px; }
+
+.home-main__right img {
+  width: 700px; }
+
+.hidden {
+  display: none !important; }
+
+.show {
+  display: block !important; }
+
+.fullScreen {
+  width: 100%;
+  height: 100%;
+  overflow: auto; }
+
+.newGame-main {
+  display: flex;
+  justify-content: center;
+  align-items: center; }
+  .newGame-main .submit {
+    width: 100%; }
+  .newGame-main p {
+    text-align: center;
+    font-size: 20px;
+    margin-bottom: 30px; }
+  .newGame-main .newGame-main__container {
+    width: 550px; }
+
+.playGame-main {
+  background-color: #f9f9f9; }
+  .playGame-main .header {
+    height: 80px;
+    background-color: whitesmoke; }
+  .playGame-main .playGame-main__container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100%; }
+    .playGame-main .playGame-main__container .Room-module--table {
+      display: flex;
+      width: 100%;
+      align-items: center;
+      justify-content: center; }
+    .playGame-main .playGame-main__container .Room-module--cards-selector {
+      margin-top: 30px; }
+    .playGame-main .playGame-main__container .Room-module--cards-label {
+      text-align: center; }
+  .playGame-main .table-center {
+    height: 150px; }
+    .playGame-main .table-center .Table-module--caption-warp {
+      background-color: #d7e9ff;
+      height: 100%;
+      border-radius: 20px;
+      display: flex;
+      justify-content: center;
+      min-width: 250px;
+      width: 100%; }
+    .playGame-main .table-center .Table-module--caption {
+      display: flex;
+      align-items: center; }
+    .playGame-main .table-center .Table-module--show-card {
+      display: flex;
+      align-items: center; }
+  .playGame-main .Table-container {
+    display: grid;
+    grid-template-columns: 110px 1fr 110px;
+    grid-gap: 20px;
+    min-height: 200px; }
+  .playGame-main .Table-module--cell {
+    min-height: 150px;
+    padding: 10px;
+    display: flex;
+    justify-content: center; }
+  .playGame-main .Table-module--player-container {
+    margin-top: 10px;
+    width: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center; }
+    .playGame-main .Table-module--player-container .Table-module--player-warp {
+      display: flex;
+      flex-direction: column;
+      align-items: center; }
+      .playGame-main .Table-module--player-container .Table-module--player-warp .Player-module--container {
+        height: 70px;
+        width: 42px;
+        border-radius: 11px;
+        display: flex;
+        align-items: center;
+        justify-content: center; }
+      .playGame-main .Table-module--player-container .Table-module--player-warp .Player-module--card {
+        height: 70px;
+        width: 42px;
+        border-radius: 11px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all .6s;
+        position: relative;
+        transform-style: preserve-3d;
+        transform: rotateY(0deg); }
+      .playGame-main .Table-module--player-container .Table-module--player-warp .Player-module--player-name {
+        font-size: 17px;
+        font-weight: 700;
+        color: #1f1f1f;
+        padding-top: 10px;
+        overflow: hidden; }
+      .playGame-main .Table-module--player-container .Table-module--player-warp .Player-module--card-empty {
+        background: #e8e9ea; }
+      .playGame-main .Table-module--player-container .Table-module--player-warp .Card-module--PictureBox {
+        background: linear-gradient(45deg, #3993ff 12%, transparent 0, transparent 88%, #3993ff 0), linear-gradient(135deg, transparent 37%, #1a7bf2 0, #1a7bf2 63%, transparent 0), linear-gradient(45deg, transparent 37%, #3993ff 0, #3993ff 63%, transparent 0), #74b3ff;
+        background-size: 17px 17px;
+        height: 100%;
+        width: 100%;
+        border-radius: 8px;
+        transition: all .1s;
+        transform: rotateY(180deg); }
+      .playGame-main .Table-module--player-container .Table-module--player-warp .Card-module--value {
+        position: absolute;
+        width: 100%;
+        height: 100%; }
+      .playGame-main .Table-module--player-container .Table-module--player-warp .CardValue {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #fff;
+        border-radius: 8px;
+        border: 2px solid #3993ff;
+        color: #3993ff;
+        font-weight: 700; }
+      .playGame-main .Table-module--player-container .Table-module--player-warp .Card-module--downwards {
+        transform: rotateY(180deg); }
+  .playGame-main .table-top, .playGame-main .table-bottom {
+    max-width: 800px;
+    flex-wrap: wrap; }
+  .playGame-main .Room-module--card {
+    margin: 0 10px;
+    cursor: pointer; }
+    .playGame-main .Room-module--card button {
+      border-radius: 8px;
+      border: 2px solid #3993ff;
+      color: #3993ff;
+      font-size: 18px;
+      height: 85px;
+      width: 55px;
+      background: white;
+      font-weight: 700;
+      transition: all .09s linear; }
+    .playGame-main .Room-module--card:hover button {
+      background: #c9e2ff; }
+  .playGame-main .Room-module--card-active button {
+    background: #3993ff;
+    color: #fff;
+    margin-top: -8px; }
+  .playGame-main .Room-module--card-active:hover button {
+    background: #3993ff; }
+  .playGame-main .Room-module--cards-selector {
+    display: flex;
+    margin-bottom: 30px; }
+  .playGame-main .Header-Game--name-warp {
+    display: flex;
+    margin-left: 50px;
+    font-weight: 700;
+    font-size: 20px;
+    align-items: center; }
+    .playGame-main .Header-Game--name-warp .Game-Name--label {
+      margin-right: 15px; }
+  .playGame-main .Header-Game--player-warp {
+    font-weight: 700;
+    font-size: 20px;
+    margin-right: 100px;
+    display: flex;
+    align-items: center; }
+    .playGame-main .Header-Game--player-warp .Header-Game--player-name-label {
+      margin-right: 10px; }
+  .playGame-main .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; }
+
+.new-game-btn {
+  background-color: #fff !important; }
+  .new-game-btn a {
+    text-decoration: none; }

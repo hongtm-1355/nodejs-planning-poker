@@ -1,0 +1,112 @@
+extends ../layout
+//- block scripts
+//-   script(src="/javascripts/play.js")
+
+block content
+  div(class="playGame-main fullScreen")
+    div.header
+      .Header-Game--name-warp
+        .Game-Name--label= gameName
+        .Game-Name--setting
+          button.btn.btn-outline-primary(type='button' data-bs-toggle="modal" data-bs-target="#exampleModal")
+            svg.bi.bi-gear(xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' viewbox='0 0 16 16')
+              path(d='M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z')
+              path(d='M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z')
+
+      .Header-Game--player-warp
+        .Header-Game--player-name-label HHH
+        button.btn.btn-outline-primary(type='button')
+          svg.bi.bi-pencil(xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' viewbox='0 0 16 16')
+            path(d='M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z')
+
+
+    div(class="playGame-main__container")
+      div.Room-module--table
+        div.Table-container
+          div
+          div.Table-module--cell#table-top
+            //- each val in [1, 2, 3, 4, 5, 6, 7, 8, 9]
+            //-   div.Table-module--player-container
+            //-     div.Table-module--player-warp
+            //-       div.Player-module--container.Player-module--card-empty
+            //-       div.Player-module--player-name Fuckyou
+
+            //- div.Table-module--player-container
+            //-   div.Table-module--player-warp
+            //-     div.Player-module--container
+            //-       div.Player-module--card.Card-module--downwards
+            //-         div.Card-module--value
+            //-           div.CardValue 5
+            //-         div.Card-module--PictureBox
+            //-     div.Player-module--player-name Fuckyou1
+
+          div
+          div.Table-module--cell#table-left
+            //- div.Table-module--player-container
+            //-   div.Table-module--player-warp
+            //-     div.Player-module--container.Player-module--card-empty#test
+            //-     div.Player-module--player-name Fuckyou
+
+          div.Table-module--cell.table-center
+            div.Table-module--caption-warp
+              //- div.Table-module--caption Pick your cards!
+              div.Table-module--show-card
+                button.btn.btn-primary(type='button' id="showCard" disabled) Show Card
+                button.btn.btn-primary.hidden(type='button' id="resetCard") Reset
+
+          div.Table-module--cell#table-right
+            //- div.Table-module--player-container
+            //-   div.Table-module--player-warp
+            //-     div.Player-module--container.Player-module--card-empty
+            //-     div.Player-module--player-name Fuckyou
+          div
+          div.Table-module--cell#table-bottom
+            //- each val in [1, 2, 3, 4, 5]
+            //-   div.Table-module--player-container
+            //-     div.Table-module--player-warp
+            //-       div.Player-module--container.Player-module--card-empty
+            //-       div.Player-module--player-name Fuckyou
+
+          div
+
+      div.Room-module--cards
+        div.Room-module--cards-label Choose your card
+        div.Room-module--cards-selector
+          each val in [0, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, '?']
+            div.Room-module--card
+              button(class="btn-choose-card" value=val)= val
+
+          //- div.Room-module--card.Room-module--card-active
+          //-   button 1
+
+  #exampleModal.modal.fade(tabindex='-1' aria-labelledby='exampleModalLabel' aria-hidden='true')
+    .modal-dialog.modal-dialog-centered
+      .modal-content
+        .modal-header
+          h5#exampleModalLabel.modal-title Update Setting
+          button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+        .modal-body
+          form
+            .mb-3
+              label.form-label Game's name
+              input.form-control(name='game_name')
+
+            .form-check
+              input#flexCheckDefault.form-check-input(type='checkbox' value='')
+              label.form-check-label(for='flexCheckDefault')
+                | Enable Password
+
+            .mb-3
+              label.form-label Password
+              input.form-control(type='password' name="paddword")
+
+            .mb-3
+              label.form-label Voting system
+              select.form-select(name="voting")
+                option(selected='') Open this select menu
+                option(value='1' selected) Fibonacci ( 0, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, ? )
+                option(value='2') Modified Fibonacci ( 0, ½, 1, 2, 3, 5, 8, 13, 20, 40, 100, ? )
+
+        .modal-footer
+          button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close
+          button.btn.btn-primary(type='button') Save changes
