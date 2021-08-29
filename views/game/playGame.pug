@@ -1,6 +1,6 @@
 extends ../layout
-//- block scripts
-//-   script(src="/javascripts/play.js")
+block scripts
+  script(src="/javascripts/play.js")
 
 block content
   div(class="playGame-main fullScreen")
@@ -15,7 +15,7 @@ block content
 
       .Header-Game--player-warp
         .Header-Game--player-name-label HHH
-        button.btn.btn-outline-primary(type='button')
+        button.btn.btn-outline-primary(type='button' data-bs-toggle="modal" data-bs-target="#editNameModal")
           svg.bi.bi-pencil(xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' viewbox='0 0 16 16')
             path(d='M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z')
 
@@ -23,51 +23,20 @@ block content
     div(class="playGame-main__container")
       div.Room-module--table
         div.Table-container
-          div
+          div.Table-module--cell-bank
           div.Table-module--cell#table-top
-            //- each val in [1, 2, 3, 4, 5, 6, 7, 8, 9]
-            //-   div.Table-module--player-container
-            //-     div.Table-module--player-warp
-            //-       div.Player-module--container.Player-module--card-empty
-            //-       div.Player-module--player-name Fuckyou
-
-            //- div.Table-module--player-container
-            //-   div.Table-module--player-warp
-            //-     div.Player-module--container
-            //-       div.Player-module--card.Card-module--downwards
-            //-         div.Card-module--value
-            //-           div.CardValue 5
-            //-         div.Card-module--PictureBox
-            //-     div.Player-module--player-name Fuckyou1
-
-          div
+          div.Table-module--cell-bank
           div.Table-module--cell#table-left
-            //- div.Table-module--player-container
-            //-   div.Table-module--player-warp
-            //-     div.Player-module--container.Player-module--card-empty#test
-            //-     div.Player-module--player-name Fuckyou
-
           div.Table-module--cell.table-center
             div.Table-module--caption-warp
-              //- div.Table-module--caption Pick your cards!
               div.Table-module--show-card
-                button.btn.btn-primary(type='button' id="showCard" disabled) Show Card
+                button.btn.btn-primary.show(type='button' id="showCard" disabled) Show Card
                 button.btn.btn-primary.hidden(type='button' id="resetCard") Reset
 
           div.Table-module--cell#table-right
-            //- div.Table-module--player-container
-            //-   div.Table-module--player-warp
-            //-     div.Player-module--container.Player-module--card-empty
-            //-     div.Player-module--player-name Fuckyou
-          div
+          div.Table-module--cell-bank
           div.Table-module--cell#table-bottom
-            //- each val in [1, 2, 3, 4, 5]
-            //-   div.Table-module--player-container
-            //-     div.Table-module--player-warp
-            //-       div.Player-module--container.Player-module--card-empty
-            //-       div.Player-module--player-name Fuckyou
-
-          div
+          div.Table-module--cell-bank
 
       div.Room-module--cards
         div.Room-module--cards-label Choose your card
@@ -76,9 +45,6 @@ block content
             div.Room-module--card
               button(class="btn-choose-card" value=val)= val
 
-          //- div.Room-module--card.Room-module--card-active
-          //-   button 1
-
   #exampleModal.modal.fade(tabindex='-1' aria-labelledby='exampleModalLabel' aria-hidden='true')
     .modal-dialog.modal-dialog-centered
       .modal-content
@@ -86,7 +52,7 @@ block content
           h5#exampleModalLabel.modal-title Update Setting
           button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
         .modal-body
-          form
+          form(autocomplete="off")
             .mb-3
               label.form-label Game's name
               input.form-control(name='game_name')
@@ -110,3 +76,19 @@ block content
         .modal-footer
           button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close
           button.btn.btn-primary(type='button') Save changes
+
+  #editNameModal.modal.fade(tabindex='-1' aria-labelledby='editNameLabel' aria-hidden='true')
+    .modal-dialog.modal-dialog-centered
+      .modal-content
+        .modal-header
+          h5#editNameLabel.modal-title Choose A Name
+          button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+        .modal-body
+          form#updatePlayerForm
+            .mb-3
+              label.form-label Your name
+              input.form-control(name='name' type="text" required='true')
+
+        .modal-footer
+          button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close
+          button.btn.btn-primary#updatePlayerBtn(type='button') Save changes

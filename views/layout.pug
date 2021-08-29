@@ -8,8 +8,9 @@ html
     script(src="https://unpkg.com/socket.io-client@4.1.2/dist/socket.io.min.js")
   body
     block content
-    script(src="/js/bootstrap.min.js")
+    script(src="/js/bootstrap/dist/js/bootstrap.min.js")
+    script(src="/js/mustache/mustache.min.js")
+    script(src="/js/jquery/dist/jquery.min.js")
     script(src="/javascripts/common.js")
-    //- block scripts
-    script(src="/javascripts/main.js")
-    script(src="/javascripts/play.js")
+    block scripts
+    //- script(src="/javascripts/play.js")

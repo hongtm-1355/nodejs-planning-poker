@@ -135,9 +135,7 @@ body {
         overflow: hidden; }
       .playGame-main .Table-module--player-container .Table-module--player-warp .Player-module--card-empty {
         background: #e8e9ea; }
-      .playGame-main .Table-module--player-container .Table-module--player-warp .Card-module--PictureBox {
-        background: linear-gradient(45deg, #3993ff 12%, transparent 0, transparent 88%, #3993ff 0), linear-gradient(135deg, transparent 37%, #1a7bf2 0, #1a7bf2 63%, transparent 0), linear-gradient(45deg, transparent 37%, #3993ff 0, #3993ff 63%, transparent 0), #74b3ff;
-        background-size: 17px 17px;
+      .playGame-main .Table-module--player-container .Table-module--player-warp .Card-module--PictureSlide {
         height: 100%;
         width: 100%;
         border-radius: 8px;
@@ -157,9 +155,17 @@ body {
         border-radius: 8px;
         border: 2px solid #3993ff;
         color: #3993ff;
-        font-weight: 700; }
+        font-weight: 700;
+        backface-visibility: hidden;
+        overflow: hidden; }
       .playGame-main .Table-module--player-container .Table-module--player-warp .Card-module--downwards {
         transform: rotateY(180deg); }
+      .playGame-main .Table-module--player-container .Table-module--player-warp .Card-module--PictureBox {
+        height: 100%;
+        width: 100%;
+        border-radius: 8px;
+        background: linear-gradient(45deg, #3993ff 12%, transparent 0, transparent 88%, #3993ff 0), linear-gradient(135deg, transparent 37%, #1a7bf2 0, #1a7bf2 63%, transparent 0), linear-gradient(45deg, transparent 37%, #3993ff 0, #3993ff 63%, transparent 0), #74b3ff;
+        background-size: 17px 17px; }
   .playGame-main .table-top, .playGame-main .table-bottom {
     max-width: 800px;
     flex-wrap: wrap; }

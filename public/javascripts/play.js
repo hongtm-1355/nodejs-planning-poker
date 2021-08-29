@@ -1,37 +1,16 @@
+const socket = io()
 
-const showCardEle = document.getElementById('showCard')
-const resetCardEle = document.getElementById('resetCard')
-
-
-const makePositionPlayer = players => {
-  const map = {
-    top: [],
-    right: [],
-    bottom: [],
-    left: []
+function objectifyForm(formArray) {
+  //serialize data function
+  var returnArray = {};
+  for (var i = 0; i < formArray.length; i++){
+      returnArray[formArray[i]['name']] = formArray[i]['value'];
   }
-
-  players.forEach((i, idx) => {
-    const index = idx + 1
-    if (index == 1) {
-      map.top.push(i)
-    } else if (index == 2) {
-      map.right.push(i)
-    } else if (index == 3) {
-      map.bottom.push(i)
-    } else if (index == 4) {
-      map.left.push(i)
-    } else if (index % 2 == 1) {
-      map.top.push(i)
-    } else if (index % 2 == 0) {
-      map.bottom.push(i)
-    }
-  })
-
-  return map
+  return returnArray;
 }
 
 function renderCards(users, id) {
+  console.log('render', users)
   const $tableTop    = document.querySelector('#table-top')
   const $tableRight  = document.querySelector('#table-right')
   const $tableLeft   = document.querySelector('#table-left')
@@ -45,79 +24,168 @@ function renderCards(users, id) {
   const map = makePositionPlayer(users)
 
   map.top.forEach(i => {
-    const node = addCard(i.userName, i.id)
-    $tableTop.appendChild(node)
+    const html = addCard(i.name, i.id, i.owner)
+    $tableTop.insertAdjacentHTML('beforeend', html)
+
+    if (i.point) addCardPicture(i.point, i.id)
   })
 
   map.bottom.forEach(i => {
-    const node = addCard(i.userName, i.id)
-    $tableBottom.appendChild(node)
+    const html = addCard(i.name, i.id, i.owner)
+    $tableBottom.insertAdjacentHTML('beforeend', html)
+
+    if (i.point) addCardPicture(i.point, i.id)
   })
 
   map.right.forEach(i => {
-    const node = addCard(i.userName, i.id)
-    $tableRight.appendChild(node)
+    const html = addCard(i.name, i.id, i.owner)
+    $tableRight.insertAdjacentHTML('beforeend', html)
+
+    if (i.point) addCardPicture(i.point, i.id)
   })
 
   map.left.forEach(i => {
-    const node = addCard(i.userName, i.id)
-    $tableLeft.appendChild(node)
+    const html = addCard(i.name, i.id, i.owner)
+    $tableLeft.insertAdjacentHTML('beforeend', html)
+
+    if (i.point) addCardPicture(i.point, i.id)
   })
+}
 
-  const btnChooseElements = document.getElementsByClassName('btn-choose-card')
-  // const concac = document.getElementById('me')
-  // console.log(concac.classList)
+const joinGame = (player) => {
+  const roomId = location.pathname.replace('/game/play/', '')
+  console.log(roomId, player)
+  socket.emit('join', { player, roomId }, (user) => {
+    console.log(`${JSON.stringify(user)} connected`)
+    this.localStorage.setItem('player', JSON.stringify(user))
+    $('.Header-Game--player-name-label')[0].innerText = user.name
 
-  // Array.from(btnChooseElements).forEach(ele => {
-  //   ele.addEventListener('click', function(e) {
-  //     console.log('onlick')
-  //     Array.from(btnChooseElements).forEach(_ele => {
-  //       if (_ele.value == e.target.value) {
-  //         _ele.closest('.Room-module--card').classList.add("Room-module--card-active")
-
-  //         concac.classList.remove('Player-module--card-empty', 'Player-module--container')
-  //         // concac.classList.add('Player-module--card')
-  //         addCardPicture(_ele, concac)
-
-  //         isSelect = true
-  //         showCardEle.removeAttribute("disabled");
-  //       }
-  //       else _ele.closest('.Room-module--card').classList.remove("Room-module--card-active")
-  //     })
-  //   })
-  // });
+    // socket.emit('getUser', roomId, (users) => {
+    //   console.log('renderUsers')
+    //   renderCards(users)
+    // })
+  })
 }
 
 
 window.addEventListener('load', function() {
-  console.log("RELEASE PLAY")
-
-
-  const roomId = location.pathname.replace('/new-game/play/', '')
   const urlSearchParams = new URLSearchParams(location.search)
   const params = Object.fromEntries(urlSearchParams.entries())
 
-  socket.emit('join', { userName: params.name, room: roomId }, (user) => {
-    console.log(user)
-    console.log('A new Connected')
-    this.localStorage.setItem('user', JSON.stringify(user))
-    socket.emit('getUser', (users) => {
-      renderCards(users)
+  const $btnChooseElements = document.getElementsByClassName('btn-choose-card')
+  const $showCardEle       = document.getElementById('showCard')
+  const $resetCardEle      = document.getElementById('resetCard')
+
+  const player = JSON.parse(localStorage.getItem('player'))
+
+  if (!player || Object.keys(player).length == 0) {
+    $('#editNameModal').modal('show')
+  } else {
+    console.log(player)
+    joinGame(player)
+  }
+
+  const showAllCard = () => {
+    const roomId = location.pathname.replace('/game/play/', '')
+    socket.emit('showResult', roomId, () => {
+      const $elements = document.getElementsByClassName('Player-module--card')
+      Array.from($elements).forEach(_ele => {
+        _ele.classList.remove("Card-module--downwards")
+      })
+      toggleVisibleBy($resetCardEle)
+      toggleVisibleBy($showCardEle)
     })
+  }
+
+  const resetAllCard = () => {
+    const roomId = location.pathname.replace('/game/play/', '')
+    socket.emit('resetResult', roomId, () => {
+      const $elements = document.getElementsByClassName('Player-module--card')
+
+      Array.from($elements).forEach(_ele => {
+        _ele.parentNode.classList.add('Player-module--card-empty', 'Player-module--container')
+        _ele.parentNode.removeChild(_ele)
+      })
+      toggleVisibleBy($resetCardEle)
+      toggleVisibleBy($showCardEle)
+
+      $showCardEle.setAttribute("disabled" ,"true");
+      isSelect = false
+
+      Array.from(document.getElementsByClassName('Room-module--card')).forEach(element => {
+        element.classList.remove("Room-module--card-active")
+      });
+    })
+  }
+
+  const selectPoint = (e) => {
+    Array.from($btnChooseElements).forEach(_ele => {
+      if (_ele.value == e.target.value) {
+        _ele.closest('.Room-module--card').classList.add("Room-module--card-active")
+        isSelect = true
+        $showCardEle.removeAttribute("disabled");
+        const roomId = location.pathname.replace('/game/play/', '')
+        const user = JSON.parse(localStorage.getItem('player'))
+        console.log(roomId, location.pathname)
+        socket.emit('chooseCard', { roomId, point: _ele.value, userId: user.id }, () => {
+          addCardPicture(_ele.value, user.id)
+        })
+      }
+      else _ele.closest('.Room-module--card').classList.remove("Room-module--card-active")
+    })
+  }
+
+  Array.from($btnChooseElements).forEach(ele => {
+    ele.addEventListener('click', selectPoint)
+  });
+
+  $showCardEle.addEventListener('click', showAllCard)
+  $resetCardEle.addEventListener('click', resetAllCard)
+
+  $('#updatePlayerBtn').on('click', (e) => {
+    console.log('update player')
+    const player = objectifyForm($('#updatePlayerForm').serializeArray())
+    console.log(player)
+    joinGame(player)
+    $('#editNameModal').modal('hide')
   })
 
-  socket.on('updateUser', (users, id) => {
-    console.log('Updated Users', users)
-    renderCards(users, id)
+
+
+  socket.on('updateUser', (users) => {
+    console.log('Update Users', users)
+    renderCards(users)
   })
 
   socket.on('updateChooseCard', user => {
-    console.log('tao ne')
     addCardPicture(user.point, user.id)
   })
 
+  socket.on('updateCard', () => {
+    const $elements = document.getElementsByClassName('Player-module--card')
+    console.log('update card')
+    Array.from($elements).forEach(_ele => {
+      _ele.classList.remove("Card-module--downwards")
+    })
+    toggleVisibleBy($resetCardEle)
+    toggleVisibleBy($showCardEle)
+  })
 
-  // const users = new Array(parseInt(params.num)).fill(0).map((i, idx) => {
-  //   return { id: Math.random().toString(36).slice(2), userName: `Test ${idx + 1}`, point: null, owner: idx == 0}
-  // })
+  socket.on('updateResetCard', () => {
+    const $elements = document.getElementsByClassName('Player-module--card')
+
+    Array.from($elements).forEach(_ele => {
+      _ele.parentNode.classList.add('Player-module--card-empty', 'Player-module--container')
+      _ele.parentNode.removeChild(_ele)
+    })
+    toggleVisibleBy($resetCardEle)
+    toggleVisibleBy($showCardEle)
+
+    $showCardEle.setAttribute("disabled" ,"true");
+    isSelect = false
+
+    Array.from(document.getElementsByClassName('Room-module--card')).forEach(element => {
+      element.classList.remove("Room-module--card-active")
+    });
+  })
 })

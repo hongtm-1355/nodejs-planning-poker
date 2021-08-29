@@ -8,14 +8,22 @@ const createError    = require('http-errors')
 const cookieParser   = require('cookie-parser')
 const methodOverride = require('method-override')
 
-const indexRouter   = require('./routes/index');
-const newGameRouter = require('./routes/newGame.route');
-const gameModel     = require('./models/game.model')
+const indexRouter    = require('./routes/index');
+const newGameRouter  = require('./routes/newGame.route');
+const mongoConnect   = require('./config/mongodb')
+const gameModel      = require('./models/game.model')
+const { Hmac } = require('crypto')
+
 
 const port   = 3000
 const app    = express();
 const server = http.createServer(app)
 const io     = socketio(server)
+
+
+mongoConnect.connectToServer( function( err, client ) {
+  if (err) logger.error(err);
+} );
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -25,7 +33,7 @@ app.use(sass({
   dest: path.join(__dirname, 'public')
 }))
 app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css'));
-app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js'));
+app.use('/js', express.static(__dirname + '/node_modules'));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -41,7 +49,7 @@ app.use(methodOverride(function (req, res) {
   }
 }));
 app.use('/', indexRouter);
-app.use('/new-game', newGameRouter);
+app.use('/game', newGameRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -59,45 +67,70 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-const users = []
 
 io.on('connection', (socket) => {
   logger.warn('New WebSocket connection')
 
-  socket.on('join', ({ userName, room }, callback) => {
-    const newUser = { id: socket.id, userName: userName, point: null, room: room }
-    logger.info('user joined', newUser.userName, room)
-    users.push(newUser)
-    socket.join(room)
-    callback(newUser)
-    // socket.emit('updateUser', users)
-    // socket.broadcast.to(room).emit('updateUser', users)
-    io.to(room).emit('updateUser', users)
-  })
+  socket.on('join', async ({ player, roomId }, callback) => {
+    logger.info(`[${socket.id}]${player.name} user joined room: ${roomId}`)
+    try {
+      const userId = player.id
+      const room = gameModel.findRoom(roomId)
+      var user = { id: userId || socket.id, name: player.name, point: null }
+      var result = room
 
-  socket.on('getUser', (callback) => {
-    callback(users)
-  })
+      if (room.connections.length == 0) {
+        user = { id: userId || socket.id, name: player.name, point: null, socketId: socket.id, owner: true }
+        result = gameModel.joinRoom(roomId, user, true)
+      } else if (!room.connections.map(i => i.id).includes(userId)) {
+        user = { id: userId || socket.id, name: player.name, point: null, socketId: socket.id, owner: false }
+        result = gameModel.joinRoom(roomId, user, false)
+      } else {
+        // gameModel.updateSocket(roomId, userId, socket.id)
+      }
 
-  socket.on('chooseCard', ({ userId, point}, callback) => {
-    const index = users.findIndex(user => user.id === socket.id)
-    if (index !== -1) {
-      const user = users[index]
-      user.point = point
-
-      logger.info('Choose Card', userId, point, user.room)
-      logger.info('Choose User', user)
-      socket.broadcast.to(user.room).emit('updateChooseCard', user)
+      socket.join(roomId)
+      logger.info(user)
       callback(user)
+      // socket.emit('updateUser', users)
+      // socket.broadcast.to(room).emit('updateUser', users)
+      logger.info(result)
+
+      io.to(roomId).emit('updateUser', result.connections || [])
+    } catch (error) {
+      logger.error(error)
     }
   })
 
-  socket.on('disconnect', () => {
-    logger.warn('Disconnect socket')
-    const index = users.findIndex(user => user.id === socket.id)
-    if (index !== -1) {
-      const user = users.splice(index, 1)[0]
-      io.to(user.room).emit('updateUser', users)
+  socket.on('getUser', async (roomId, callback) => {
+    const room = gameModel.findRoom(roomId)
+    callback(room.connections)
+  })
+
+  socket.on('chooseCard', ({ roomId, point, userId}, callback) => {
+    const result = gameModel.selectCard(roomId, userId, point)
+    logger.info(`${userId} choose Card ${roomId} - ${point}`)
+    socket.broadcast.to(roomId).emit('updateChooseCard', { id: userId, point })
+    callback()
+  })
+
+  socket.on('showResult', (roomId, callback) => {
+    socket.broadcast.to(roomId).emit('updateCard')
+    callback()
+  })
+
+  socket.on('resetResult', (roomId, callback) => {
+    socket.broadcast.to(roomId).emit('updateResetCard')
+    callback()
+  })
+
+  socket.on('disconnect', async (reason) => {
+    // logger.error(reason)
+    logger.warn(`Disconnect socket ${socket.id}`)
+    room = gameModel.leftRoom(socket.id)
+    logger.error(room)
+    if (room) {
+      io.broadcast.to(room.id).emit('updateUser', room.connections || [])
     }
   })
 })
@@ -105,4 +138,14 @@ io.on('connection', (socket) => {
 
 server.listen(port, () => {
   logger.info(`Server is up on port ${port}!`)
+})
+
+process.on('SIGINT', () => {
+  console.log('exiting…')
+  process.exit()
+})
+
+process.on('exit', () => {
+  console.log('exiting…')
+  process.exit()
 })

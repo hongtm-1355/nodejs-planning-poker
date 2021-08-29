@@ -11,39 +11,81 @@ const _createElement = (eleType, option) => {
   return node
 }
 
-function addCard(userName, userId) {
-  // div.Table-module--player-container
-    // div.Table-module--player-warp
-    //   div.Player-module--container.Player-module--card-empty#userID
-    //   div.Player-module--player-name Fuckyou
+function addCard(userName, userId, owner) {
+  const star = owner ? '⭐' : ''
+  const cardTemplate = `
+    <div class="Table-module--player-container">
+      <div class="Table-module--player-warp">
+        <div class="Player-module--container Player-module--card-empty" id={{ userId }}></div>
+        <div class="Player-module--player-name">{{ star }} {{ userName }}</div>
+      </div>
+    </div>
+  `
 
-  const divPlayerContainer = _createElement('div', { classes: ['Table-module--player-container'] })
-  const divPlayerWarp      = _createElement('div', { classes: ['Table-module--player-warp'] })
-  const divCardEmpty       = _createElement('div', { classes: ['Player-module--container', 'Player-module--card-empty'], id: userId })
-  const divPlayerName      = _createElement('div', { classes: ['Player-module--player-name'], innerText: userName })
+  return Mustache.render(cardTemplate, {
+    userId: userId,
+    userName: userName,
+    star: star
+  })
+}
 
-  divPlayerWarp.appendChild(divCardEmpty)
-  divPlayerWarp.appendChild(divPlayerName)
+function addCardPicture(point, userID) {
+  console.log(point, userID)
+  const pictureTemplate = `
+    <div class="Player-module--card Card-module--downwards">
+      <div class="Card-module--value">
+        <div class="CardValue">{{ point }}</div>
+      </div>
+      <div class="Card-module--PictureSlide">
+        <div class="Card-module--PictureBox"></div>
+      </div>
+    </div>
+  `
 
-  divPlayerContainer.appendChild(divPlayerWarp)
+  const html = Mustache.render(pictureTemplate, { point })
+  const $me = document.getElementById(userID)
 
-  return divPlayerContainer
+  $me.innerHTML = ''
+  $me.classList.remove('Player-module--card-empty', 'Player-module--container')
+  $me.insertAdjacentHTML('beforeend', html)
 }
 
 
-function addCardPicture(point, userID) {
-  const $me = document.getElementById(userID)
-  $me.innerHTML = ''
-  $me.classList.remove('Player-module--card-empty', 'Player-module--container')
+const makePositionPlayer = players => {
+  const map = {
+    top: [],
+    right: [],
+    bottom: [],
+    left: []
+  }
 
-  const divContainer = _createElement('div', { classes: ['Player-module--card', 'Card-module--downwards'] })
-  const divCardModuleValue = _createElement('div', { classes: ['Card-module--value'] })
-  const divCardValue = _createElement('div', { classes: ['CardValue'], innerText: point })
-  const divCardModulePictureBox = _createElement('div', { classes: ['Card-module--PictureBox'] })
+  players.forEach((i, idx) => {
+    const index = idx + 1
+    if (index == 1) {
+      map.top.push(i)
+    } else if (index == 2) {
+      map.right.push(i)
+    } else if (index == 3) {
+      map.bottom.push(i)
+    } else if (index == 4) {
+      map.left.push(i)
+    } else if (index % 2 == 1) {
+      map.top.push(i)
+    } else if (index % 2 == 0) {
+      map.bottom.push(i)
+    }
+  })
+
+  return map
+}
 
 
-  divCardModuleValue.appendChild(divCardValue)
-  divContainer.appendChild(divCardModuleValue)
-  divContainer.appendChild(divCardModulePictureBox)
-  $me.appendChild(divContainer)
+const toggleVisibleBy = ($ele, options = { show: 'show', hide: 'hidden' }) => {
+  if ($ele.classList.contains(options.show)) {
+    $ele.classList.remove(options.show)
+    $ele.classList.add(options.hide)
+  } else {
+    $ele.classList.remove(options.hide)
+    $ele.classList.add(options.show)
+  }
 }
